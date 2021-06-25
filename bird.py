@@ -376,11 +376,19 @@ while True:
 
     SCREEN.blit(BG,(0,0))
     
+    
+    
     if gameState == "Play":
+       
 
         rotated_bird = rotate_bird(bird_surface)
         SCREEN.blit(rotated_bird,bird_rect)
         draw_pipes(pipe_list)
+        baseX -= 5*RELATIVE_PERCENT
+        SCREEN.blit(BASE,(baseX,900*RELATIVE_PERCENT))
+        SCREEN.blit(BASE,(baseX+BASE_WIDTH,900*RELATIVE_PERCENT))
+        if baseX<-BASE_WIDTH:
+            baseX = 0
         pipe_list = move_pipes(pipe_list)
         gameState = check_collision(pipe_list)
         velocity += GRAVITY
@@ -419,16 +427,15 @@ while True:
         SCREEN.blit(SETTINGS,settings_rect)
         high_score = update_score(score,high_score)
         score_display('game_over')
-        
-    #Drawing Base
-    baseX -= 1
+
     SCREEN.blit(BASE,(baseX,900*RELATIVE_PERCENT))
     SCREEN.blit(BASE,(baseX+BASE_WIDTH,900*RELATIVE_PERCENT))
-    if baseX<-BASE_WIDTH:
-        baseX = 0
+        
 
     pygame.display.update()
     clock.tick(FPS)
+
+
 
 
 
