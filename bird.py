@@ -203,10 +203,10 @@ pipe_height = [value*RELATIVE_PERCENT for value in pipe_values]
 def draw_pipes(pipes):
     for pipe in pipes:
         if pipe.bottom >= HEIGHT:
-        	SCREEN.blit(PIPE,pipe)
+            SCREEN.blit(PIPE,pipe)
         else:
-        	flipped_pipe = pygame.transform.flip(PIPE,False,True)
-        	SCREEN.blit(flipped_pipe,pipe)
+            flipped_pipe = pygame.transform.flip(PIPE,False,True)
+            SCREEN.blit(flipped_pipe,pipe)
 
 
 def create_pipe():
