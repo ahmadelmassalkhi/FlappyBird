@@ -1,40 +1,75 @@
-import os
 import pygame
-from utils import *
-from settings import Settings
-from screen import Screen
+from utils import Utils
+from game import Game
 
 
 class Bird(object):
-    IMAGES = [pygame.transform.scale(pygame.image.load(os.path.join(
-        "Images", "bird" + str(x) + ".png")), re_size((68, 48))) for x in range(1, 4)]
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, game:Game):
+        self.game = game # needed to adjust bird's movement to obey game's settings
+
+        # bird's information
         self.x = x
         self.y = y
         self.vel = 0
+        self.width, self.height = Utils.re_size((68,48), game.relative_percent)
+
+        # bird's look
+        self.setcolor_yellow()
         self.imgIndex = 0
-        self.img = Bird.IMAGES[self.imgIndex]
-        self.rect = self.img.get_rect(center=(x, self.y))
+        self.img = self.IMAGS[self.imgIndex]
+
 
     def flap(self):
         self.vel = 0
-        self.vel -= 11 * Settings().RELATIVE_PERCENT
+        self.vel -= 11 * self.game.relative_percent
         self.y += self.vel
+
 
     def update(self):
-        self.vel += Settings().GRAVITY
+        self.vel += self.game.gravity
         self.y += self.vel
-        self.rotate_n_animate()
-        Screen().SCREEN.blit(self.img, self.rect)
 
-    def rotate_n_animate(self):
-        if not self.vel:
+        # animate
+        if self.vel == 0:
             self.imgIndex = 0
         elif self.vel > 0:
             self.imgIndex = 2
         else:
             self.imgIndex = 1
-        self.img = Bird.IMAGES[self.imgIndex]
-        self.img = pygame.transform.rotozoom(self.img, -self.vel * 3, 1)
-        self.rect = self.img.get_rect(center=(self.x, self.y))
+
+        # update image & rectangle
+        self.img = pygame.transform.rotozoom(self.IMAGS[self.imgIndex],-self.vel * 3,1)
+        self.rect = self.get_rectangle()
+
+        # draw bird to game's screen
+        self.game.screen.draw(self.img, self.rect)
+
+    
+    def get_rectangle(self):
+        return self.img.get_rect(center = (self.x, self.y))
+
+    
+    def setcolor_yellow(self):
+        YELLOW_DOWNFLAP_IMG = Utils.load_and_convert('./Images/yellowbird-downflap.png')
+        YELLOW_MIDFLAP_IMG = Utils.load_and_convert('./Images/yellowbird-midflap.png')
+        YELLOW_UPFLAP_IMG = Utils.load_and_convert('./Images/yellowbird-upflap.png')
+        self.IMAGS = [Utils.transform_scale(YELLOW_DOWNFLAP_IMG, (self.width, self.height)),
+                      Utils.transform_scale(YELLOW_MIDFLAP_IMG, (self.width, self.height)),
+                      Utils.transform_scale(YELLOW_UPFLAP_IMG, (self.width, self.height))]
+        
+    def setcolor_red(self):
+        RED_DOWNFLAP_IMG = Utils.load_and_convert('./Images/redbird-midflap.png')
+        RED_MIDFLAP_IMG = Utils.load_and_convert('./Images/redbird-upflap.png')
+        RED_UPFLAP_IMG = Utils.load_and_convert('./Images/redbird-downflap.png')
+        self.IMAGS = [Utils.transform_scale(RED_DOWNFLAP_IMG, (self.width, self.height)),
+                      Utils.transform_scale(RED_MIDFLAP_IMG, (self.width, self.height)),
+                      Utils.transform_scale(RED_UPFLAP_IMG, (self.width, self.height))]
+
+    def setcolor_blue(self):
+        BLUE_DOWNFLAP_IMG = Utils.load_and_convert('./Images/bluebird-downflap.png')
+        BLUE_MIDFLAP_IMG = Utils.load_and_convert('./Images/bluebird-midflap.png')
+        BLUE_UPFLAP_IMG = Utils.load_and_convert('./Images/bluebird-upflap.png')
+        self.IMAGS = [Utils.transform_scale(BLUE_DOWNFLAP_IMG, (self.width, self.height)),
+                      Utils.transform_scale(BLUE_MIDFLAP_IMG, (self.width, self.height)),
+                      Utils.transform_scale(BLUE_UPFLAP_IMG, (self.width, self.height))]

@@ -1,45 +1,67 @@
-import pygame
 import random
-from settings import Settings
-from utils import *
-from screen import Screen
-from base import Base
+import pygame
+from game import Game
+from utils import Utils
 
 
 class Pipe(object):
-    TOP_PIPE_IMAGE = pygame.transform.scale(
-        load_and_convert('Images/pipe.png'), re_size((104, 640)))
-    BOTTOM_PIPE_IMAGE = pygame.transform.flip(TOP_PIPE_IMAGE, False, True)
-    VELOCITY = 5 * Settings().RELATIVE_PERCENT
-    GAP = 300*Settings().RELATIVE_PERCENT
 
-    def __init__(self, x):
+    def __init__(self, x, game:Game):
+        self.game = game
+
+        # pipe information
+        self.VELOCITY = 5 * game.relative_percent
+        self.GAP = 300 * game.relative_percent
         self.x = x
 
-        self.minHeight = 100 * Settings().RELATIVE_PERCENT
-        self.maxHeight = self.minHeight + Pipe.GAP
-        self.height = random.randrange(
-            int(self.minHeight), int(Base.Y-(self.maxHeight)))
+        # pipe height
+        self.minHeight = 100 * game.relative_percent
+        self.maxHeight = self.minHeight + self.GAP
 
-        self.topRectY = self.height - Pipe.IMAGE.get_height()//2
-        self.bottomRectY = self.topRectY + Pipe.IMAGE.get_height() + Pipe.GAP
+        # set default color
+        self.setcolor_green()
+        self.generate_height()
+    
+    
+    def setcolor_green(self):
+        self.BOTTOM_PIPE_IMAGE = self.IMAGE = pygame.transform.scale(
+            Utils.load_and_convert('./Images/pipe-green.png'), Utils.re_size((104, 640), self.game.relative_percent))
+        self.TOP_PIPE_IMAGE = pygame.transform.flip(self.BOTTOM_PIPE_IMAGE, False, True)
+
+    def setcolor_red(self):
+        self.BOTTOM_PIPE_IMAGE = self.IMAGE = pygame.transform.scale(
+            Utils.load_and_convert('./Images/pipe-red.png'), Utils.re_size((104, 640), self.game.relative_percent))
+        self.TOP_PIPE_IMAGE = pygame.transform.flip(self.BOTTOM_PIPE_IMAGE, False, True)
+
 
     def update(self):
-        self.x -= Pipe.VELOCITY
-        if self.x+Pipe.IMAGE.get_width() < 0:
-            global pipe, score
-            pipe = Pipe(Screen().WIDTH)
-            self.x = Screen().WIDTH
-            score += 1
-        # draw
-        Screen().SCREEN.blit(Pipe.BOTTOM_PIPE_IMAGE, self.bottom_rectangle())
-        Screen().SCREEN.blit(Pipe.TOP_PIPE_IMAGE, self.top_rectangle())
+        # move pipe
+        self.x -= self.VELOCITY
+        
+        # score
+        if self.x + self.IMAGE.get_width() < 0:
+            self.game.score += 1
+            self.x = self.game.screen.WIDTH
+            self.generate_height()
+        
+        # draw to game's screen
+        self.game.screen.draw(self.BOTTOM_PIPE_IMAGE, self.bottom_rectangle())
+        self.game.screen.draw(self.TOP_PIPE_IMAGE, self.top_rectangle())
 
 
     def bottom_rectangle(self):
-        return Pipe.BOTTOM_PIPE_IMAGE.get_rect(
-            center=(self.x+Pipe.IMAGE.get_width()//2, self.bottomRectY))
+        centerX = self.x + self.IMAGE.get_width()//2
+        centerY = (self.height - self.IMAGE.get_height() // 2) + self.IMAGE.get_height() + self.GAP
+        return self.BOTTOM_PIPE_IMAGE.get_rect(center=(centerX, centerY))
+
 
     def top_rectangle(self):
-        return Pipe.TOP_PIPE_IMAGE.get_rect(
-            center=(self.x + Pipe.IMAGE.get_width()//2, self.topRectY))
+        centerX = self.x + self.IMAGE.get_width()//2
+        centerY = (self.height - self.IMAGE.get_height() // 2)
+        return self.TOP_PIPE_IMAGE.get_rect(center=(centerX, centerY))
+    
+
+    def generate_height(self):
+        self.height = random.randrange(
+            int(self.minHeight), int(self.game.base.y - (self.maxHeight)))
+    

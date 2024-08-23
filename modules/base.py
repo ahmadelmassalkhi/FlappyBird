@@ -1,22 +1,31 @@
 import pygame
-from utils import *
-from screen import Screen
-from settings import Settings
+from game import Game
+from utils import Utils
+
+
 
 
 class Base:
-    IMAGE = pygame.transform.scale(
-        load_and_convert('Images/base.png'), re_size((672, 224)))
-    Y = 900 * Settings().RELATIVE_PERCENT
 
-    def __init__(self, x) -> None:
+    def __init__(self, x, game:Game) -> None:
+        self.game = game
+        self.image = pygame.transform.scale(Utils.load_and_convert('./Images/base.png'), 
+                                            Utils.re_size((672, 224), game.relative_percent))
+
+
+        # coordinates
         self.x = x
-
-    def update(self):
-        self.x -= 5 * Settings().RELATIVE_PERCENT
-        if self.x < -Screen().WIDTH:
-            self.x = 0
+        self.y = 900 * game.relative_percent
         
-        # draw it
-        Screen().SCREEN.blit(Base.IMAGE, (self.x, Base.Y))
-        Screen().SCREEN.blit(Base.IMAGE, (self.x + Screen().WIDTH, Base.Y))
+        # dimensions
+        self.SIZE = (self.WIDTH, self.HEIGHT) = Utils.re_size((672, 224), game.relative_percent)
+
+
+    def move(self):
+        self.x -= 5 * self.game.relative_percent
+        if self.x < - self.game.screen.WIDTH:
+            self.x = 0
+    
+    def draw(self):
+        self.game.screen.draw(self.image, (self.x, self.y))
+        self.game.screen.draw(self.image, (self.x + self.game.screen.WIDTH, self.y))
