@@ -52,7 +52,7 @@ class Game:
                     pygame.quit()
                     quit()
                 if event.type == MOUSEBUTTONDOWN:
-                    self.state.onmousedown()
+                    self.state.onmousedown(event)
             
             self.screen.draw(self.background, (0,0))
             self.state.update()
@@ -73,7 +73,6 @@ class Game:
         self.pipe.setcolor_green()
         self.background = self.load_image('Images/background-day.png', (self.screen.WIDTH, self.screen.HEIGHT))
         
-    
 
     def load_highscore(self):
         try:
@@ -83,14 +82,13 @@ class Game:
             print("Storage not created yet!")
 
     def load_fonts(self):
-        game_font = pygame.font.Font('04B_19.ttf',40)
-        settings_font = pygame.font.Font('04B_19.ttf',25)
+        self.game_font = pygame.font.Font('04B_19.ttf',40)
+        self.settings_font = pygame.font.Font('04B_19.ttf',25)
 
     def load_sounds(self):
-        flap_sound = pygame.mixer.Sound('./Sounds/wing.wav')
-        death_sound = pygame.mixer.Sound('./Sounds/hit.wav')
-        score_sound = pygame.mixer.Sound('./Sounds/point.wav')
-
+        self.flap_sound = pygame.mixer.Sound('./Sounds/wing.wav')
+        self.death_sound = pygame.mixer.Sound('./Sounds/hit.wav')
+        self.score_sound = pygame.mixer.Sound('./Sounds/point.wav')
 
 
     def load_image(self, path:str, size:Tuple[float,float], rescale:bool=False):
@@ -104,6 +102,9 @@ class Game:
 
     def flip_image(self, image:pygame.Surface, flip_x:bool, flip_y:bool):
         return pygame.transform.flip(image, flip_x, flip_y)
+    
+
+
 
 
 if __name__ == '__main__':

@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import override
+
+from pygame.event import Event
 from game import Game
+import pygame
+
 
 
 class GameState(ABC):
@@ -12,7 +16,7 @@ class GameState(ABC):
         pass
 
     @abstractmethod
-    def onmousedown(self):
+    def onmousedown(self, event:pygame.event.Event):
         pass
 
 
@@ -27,27 +31,36 @@ class Settings(GameState):
 
 
 
-
 class Restart(GameState):
     def __init__(self, game: Game) -> None:
         super().__init__(game)
         self.image = self.game.load_image('Images/message_getready.png', (368, 534), True)
+        self.settings_button_image = self.game.load_image('Images/settings.png', (75,75), True)
+        self.settings_button_rect = self.settings_button_image.get_rect(center = (self.game.screen.WIDTH//2,300))
 
     def draw_message(self):
         self.game.screen.draw(self.image,
                               (self.game.screen.WIDTH/2 - self.image.get_width()/2, 
                                self.game.screen.HEIGHT/2 - self.image.get_height()/2))
+        
+    def draw_settings_button(self):
+        self.game.screen.draw(self.settings_button_image, 
+                              self.settings_button_rect)
 
     @override
     def update(self):
         self.draw_message()
+        self.draw_settings_button()
 
     @override
-    def onmousedown(self):
+    def onmousedown(self, event: Event):
+        if self.settings_button_rect.collidepoint(event.pos):
+            self.game.state = Settings(self.game)
+            return
         self.game.pipe.reset_coordinates()
         self.game.bird.reset_coordinates()
         self.game.state = Play(self.game)
-    
+
 
 
 
@@ -68,7 +81,7 @@ class GameOver(GameState):
         self.draw_message()
 
     @override
-    def onmousedown(self):
+    def onmousedown(self, event:pygame.event.Event):
         self.game.state = Restart(self.game)
 
 
@@ -96,6 +109,6 @@ class Play(GameState):
             self.game.state = GameOver(self.game)
 
     @override
-    def onmousedown(self):
+    def onmousedown(self, event:pygame.event.Event):
         self.game.bird.flap()
 
