@@ -4,13 +4,13 @@ from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP
 import gamestates as gamestates
 from utils import Utils
 
-
 class Game:
+
     def __init__(self) -> None:
 
         # configurations
         self.relative_percent = .75
-        self.fps = 60
+        self.fps = 120
         self.gravity = 1/4
         self.score = self.highscore = 0
 
@@ -23,17 +23,17 @@ class Game:
         self.screen = Screen(self)
 
         # objects on screen
-        from bird import Bird
-        from base import Base
-        from pipe import Pipe
-        self.bird = Bird(100 * self.relative_percent, self.screen.HEIGHT // 2, self)
-        self.base = Base(0, self)
-        self.pipe = Pipe(self.screen.WIDTH, self)
+        from Entities.bird import Bird
+        from Entities.base import Base
+        from Entities.pipe import Pipe
+        self.bird = Bird(self)
+        self.base = Base(self)
+        self.pipe = Pipe(self)
 
 
         # gamestate & mode
         self.setmode_day()
-        self.gamestate = gamestates.Play(self)
+        self.state = gamestates.Play(self)
 
         # other
         self.clock = pygame.time.Clock()
@@ -51,10 +51,10 @@ class Game:
                     pygame.quit()
                     quit()
                 if event.type == MOUSEBUTTONDOWN:
-                    self.gamestate.onmousedown()
+                    self.state.onmousedown()
             
             self.screen.draw(self.background, (0,0))
-            self.gamestate.update()
+            self.state.update()
             self.base.draw()
 
             # update display at fps
