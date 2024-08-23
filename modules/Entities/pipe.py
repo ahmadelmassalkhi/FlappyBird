@@ -1,7 +1,6 @@
 import random
 import pygame
 from game import Game
-from utils import Utils
 from Entity import GameEntity
 from typing import override
 
@@ -56,11 +55,10 @@ class Pipe(GameEntity):
     
 
     def setcolor_green(self):
-        self.BOTTOM_PIPE_IMAGE = self.IMAGE = pygame.transform.scale(
-            Utils.load_and_convert('./Images/pipe-green.png'), Utils.re_size((104, 640), self.game.relative_percent))
-        self.TOP_PIPE_IMAGE = pygame.transform.flip(self.BOTTOM_PIPE_IMAGE, False, True)
+        self.BOTTOM_PIPE_IMAGE = self.IMAGE = self.game.load_image('./Images/pipe-green.png', (104, 640), True)
+        self.TOP_PIPE_IMAGE = self.game.flip_image(self.BOTTOM_PIPE_IMAGE, False, True)
 
     def setcolor_red(self):
-        self.BOTTOM_PIPE_IMAGE = self.IMAGE = pygame.transform.scale(
-            Utils.load_and_convert('./Images/pipe-red.png'), Utils.re_size((104, 640), self.game.relative_percent))
-        self.TOP_PIPE_IMAGE = pygame.transform.flip(self.BOTTOM_PIPE_IMAGE, False, True)
+        self.BOTTOM_PIPE_IMAGE = self.IMAGE = self.game.load_image('./Images/pipe-red.png', (104, 640), True)
+        self.TOP_PIPE_IMAGE = self.game.flip_image(self.BOTTOM_PIPE_IMAGE, False, True)
+

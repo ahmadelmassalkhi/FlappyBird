@@ -1,5 +1,4 @@
 import pygame
-from utils import Utils
 from typing import Union, Tuple
 from game import Game
 
@@ -15,7 +14,7 @@ class Screen:
     
 
     def __init__(self, game:Game) -> None:
-        self.WIDTH, self.HEIGHT = Utils.re_size((576,1024), game.relative_percent)
+        self.WIDTH, self.HEIGHT = game.rescale((576, 1024))
         self.WINDOW = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
 
 

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import override
 from game import Game
-from utils import Utils
 
 
 class GameState(ABC):
@@ -32,9 +31,7 @@ class Settings(GameState):
 class Restart(GameState):
     def __init__(self, game: Game) -> None:
         super().__init__(game)
-        self.image = Utils.transform_scale(
-            Utils.load_and_convert('Images/message_getready.png'),
-            Utils.re_size((368,534), self.game.relative_percent))
+        self.image = self.game.load_image('Images/message_getready.png', (368, 534), True)
 
     def draw_message(self):
         self.game.screen.draw(self.image,
@@ -57,9 +54,7 @@ class Restart(GameState):
 class GameOver(GameState):
     def __init__(self, game: Game) -> None:
         super().__init__(game)
-        self.image = Utils.transform_scale(
-            Utils.load_and_convert('Images/gameover.png'),
-            Utils.re_size((384, 84), self.game.relative_percent))
+        self.image = self.game.load_image('Images/gameover.png', (384, 84), True)
 
     def draw_message(self):
         self.game.screen.draw(self.image,

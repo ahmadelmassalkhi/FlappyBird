@@ -1,5 +1,4 @@
 import pygame
-from utils import Utils
 from game import Game
 from Entity import GameEntity
 from typing import override
@@ -12,7 +11,7 @@ class Bird(GameEntity):
         super().__init__(game)
 
         # bird's information
-        self.width, self.height = Utils.re_size((68,48), game.relative_percent)
+        self.width, self.height = game.rescale((68, 48))
 
         # bird's look
         self.setcolor_yellow()
@@ -49,7 +48,6 @@ class Bird(GameEntity):
         self.game.screen.draw(self.img, self.rect)
 
 
-
     def flap(self):
         self.vel = 0
         self.vel -= 11 * self.game.relative_percent
@@ -59,27 +57,20 @@ class Bird(GameEntity):
         return self.img.get_rect(center = (self.x, self.y))
     
 
-    
     def setcolor_yellow(self):
-        YELLOW_DOWNFLAP_IMG = Utils.load_and_convert('./Images/yellowbird-downflap.png')
-        YELLOW_MIDFLAP_IMG = Utils.load_and_convert('./Images/yellowbird-midflap.png')
-        YELLOW_UPFLAP_IMG = Utils.load_and_convert('./Images/yellowbird-upflap.png')
-        self.IMAGS = [Utils.transform_scale(YELLOW_DOWNFLAP_IMG, (self.width, self.height)),
-                      Utils.transform_scale(YELLOW_MIDFLAP_IMG, (self.width, self.height)),
-                      Utils.transform_scale(YELLOW_UPFLAP_IMG, (self.width, self.height))]
+        self.IMAGS = [
+            self.game.load_image('./Images/yellowbird-downflap.png', (self.width, self.height)),
+            self.game.load_image('./Images/yellowbird-midflap.png', (self.width, self.height)),
+            self.game.load_image('./Images/yellowbird-upflap.png', (self.width, self.height))]
         
     def setcolor_red(self):
-        RED_DOWNFLAP_IMG = Utils.load_and_convert('./Images/redbird-downflap.png')
-        RED_MIDFLAP_IMG = Utils.load_and_convert('./Images/redbird-midflap.png')
-        RED_UPFLAP_IMG = Utils.load_and_convert('./Images/redbird-upflap.png')
-        self.IMAGS = [Utils.transform_scale(RED_DOWNFLAP_IMG, (self.width, self.height)),
-                      Utils.transform_scale(RED_MIDFLAP_IMG, (self.width, self.height)),
-                      Utils.transform_scale(RED_UPFLAP_IMG, (self.width, self.height))]
+        self.IMAGS = [
+            self.game.load_image('./Images/redbird-downflap.png', (self.width, self.height)),
+            self.game.load_image('./Images/redbird-midflap.png', (self.width, self.height)),
+            self.game.load_image('./Images/redbird-upflap.png', (self.width, self.height))]
 
     def setcolor_blue(self):
-        BLUE_DOWNFLAP_IMG = Utils.load_and_convert('./Images/bluebird-downflap.png')
-        BLUE_MIDFLAP_IMG = Utils.load_and_convert('./Images/bluebird-midflap.png')
-        BLUE_UPFLAP_IMG = Utils.load_and_convert('./Images/bluebird-upflap.png')
-        self.IMAGS = [Utils.transform_scale(BLUE_DOWNFLAP_IMG, (self.width, self.height)),
-                      Utils.transform_scale(BLUE_MIDFLAP_IMG, (self.width, self.height)),
-                      Utils.transform_scale(BLUE_UPFLAP_IMG, (self.width, self.height))]
+        self.IMAGS = [
+            self.game.load_image('./Images/bluebird-downflap.png', (self.width, self.height)),
+            self.game.load_image('./Images/bluebird-midflap.png', (self.width, self.height)),
+            self.game.load_image('./Images/bluebird-upflap.png', (self.width, self.height))]

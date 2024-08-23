@@ -2,7 +2,8 @@ import json
 import pygame
 from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP
 import gamestates as gamestates
-from utils import Utils
+from typing import Tuple
+
 
 class Game:
 
@@ -33,7 +34,7 @@ class Game:
 
         # gamestate & mode
         self.setmode_day()
-        self.state = gamestates.Play(self)
+        self.state = gamestates.Restart(self)
 
         # other
         self.clock = pygame.time.Clock()
@@ -65,16 +66,22 @@ class Game:
     def setmode_night(self):
         self.bird.setcolor_red()
         self.pipe.setcolor_red()
-        self.background = Utils.transform_scale(Utils.load_and_convert('Images/background-night.png'),
-                                                (self.screen.WIDTH, self.screen.HEIGHT))
+        self.background = self.load_image('Images/background-night.png', (self.screen.WIDTH, self.screen.HEIGHT))
 
     def setmode_day(self):
         self.bird.setcolor_yellow()
         self.pipe.setcolor_green()
-        self.background = Utils.transform_scale(Utils.load_and_convert('Images/background-day.png'),
-                                         (self.screen.WIDTH, self.screen.HEIGHT))
+        self.background = self.load_image('Images/background-day.png', (self.screen.WIDTH, self.screen.HEIGHT))
         
     
+
+    def load_highscore(self):
+        try:
+            with open('storage.txt') as storage_file:
+                data = json.load(storage_file)
+        except:
+            print("Storage not created yet!")
+
     def load_fonts(self):
         game_font = pygame.font.Font('04B_19.ttf',40)
         settings_font = pygame.font.Font('04B_19.ttf',25)
@@ -83,13 +90,20 @@ class Game:
         flap_sound = pygame.mixer.Sound('./Sounds/wing.wav')
         death_sound = pygame.mixer.Sound('./Sounds/hit.wav')
         score_sound = pygame.mixer.Sound('./Sounds/point.wav')
-        
-    def load_highscore(self):
-        try:
-            with open('storage.txt') as storage_file:
-                data = json.load(storage_file)
-        except:
-            print("Storage not created yet!")
+
+
+
+    def load_image(self, path:str, size:Tuple[float,float], rescale:bool=False):
+        if rescale: 
+            return pygame.transform.scale(pygame.image.load(path).convert_alpha(), self.rescale(size))
+        return pygame.transform.scale(pygame.image.load(path).convert_alpha(), size)
+
+    def rescale(self, size:Tuple[float, float]):
+        return (size[0] * self.relative_percent,
+                size[1] * self.relative_percent)
+
+    def flip_image(self, image:pygame.Surface, flip_x:bool, flip_y:bool):
+        return pygame.transform.flip(image, flip_x, flip_y)
 
 
 if __name__ == '__main__':

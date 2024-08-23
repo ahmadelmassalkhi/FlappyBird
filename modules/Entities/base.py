@@ -1,6 +1,5 @@
 import pygame
 from game import Game
-from utils import Utils
 from Entity import GameEntity
 from typing import override
 
@@ -9,10 +8,9 @@ class Base(GameEntity):
 
     def __init__(self, game: Game) -> None:
         super().__init__(game)
-        self.image = pygame.transform.scale(Utils.load_and_convert('./Images/base.png'), 
-                                            Utils.re_size((672, 224), game.relative_percent))
+        self.image = self.game.load_image('./Images/base.png', (672, 224), True)
         self.reset_coordinates()
-        self.SIZE = (self.WIDTH, self.HEIGHT) = Utils.re_size((672, 224), game.relative_percent)
+        self.SIZE = (self.WIDTH, self.HEIGHT) = self.game.rescale((672, 224))
 
     @override
     def move(self):
